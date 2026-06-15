@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
       urlInput.value = result.backendUrl;
       urlStatus.textContent = result.backendUrl;
     } else {
+      urlInput.value = DEFAULT_URL;
       urlStatus.textContent = DEFAULT_URL;
     }
   });
