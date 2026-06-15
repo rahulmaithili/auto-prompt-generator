@@ -147,6 +147,12 @@
   async function fetchImprovedPrompt(prompt, tone) {
     renderLoadingState();
 
+    // Create abort controller for 20 seconds timeout to prevent hanging UI
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 20000);
+
     try {
       const backendUrl = await getBackendUrl();
       const response = await fetch(backendUrl, {
@@ -154,19 +160,30 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ prompt, tone })
+        body: JSON.stringify({ prompt, tone }),
+        signal: controller.signal
       });
 
+      // Clear the timeout if the request completed
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
-        const errData = await response.json();
+        // Fallback catch if server returns non-JSON HTML error page
+        const errData = await response.json().catch(() => ({ error: 'Server returned an error response' }));
         throw new Error(errData.error || 'Server error occurred');
       }
 
       const data = await response.json();
       renderSidebarData(data);
     } catch (error) {
+      clearTimeout(timeoutId);
       console.error('APG Fetch Error:', error);
-      renderErrorState(error.message);
+      
+      let errMsg = error.message;
+      if (error.name === 'AbortError') {
+        errMsg = 'Request timed out. The server or AI API is taking too long to respond. Please try again!';
+      }
+      renderErrorState(errMsg);
     }
   }
 
