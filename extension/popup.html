@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Prompt Generator</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.15);
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --success: #10b981;
+    }
+
+    body {
+      width: 320px;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      color: var(--text);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      font-size: 24px;
+      animation: rotate 6s linear infinite;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      background: linear-gradient(to right, #6366f1, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .status-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .status-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .instructions {
+      font-size: 12px;
+      color: var(--text-muted);
+      border-left: 2px solid var(--primary);
+      padding-left: 10px;
+    }
+
+    footer {
+      font-size: 11px;
+      text-align: center;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="logo">✨</span>
+      <div>
+        <h1>Prompt Intelligence</h1>
+        <p style="font-size: 11px;">v1.0.0</p>
+      </div>
+    </header>
+
+    <div class="status-card">
+      <div class="status-row">
+        <span>Extension Status</span>
+        <div class="status-indicator">
+          <div class="dot"></div>
+          Active
+        </div>
+      </div>
+      <div class="status-row">
+        <span>API Server</span>
+        <span id="api-url-status" style="color: var(--text-muted); font-size: 12px; font-weight: 600;">http://localhost:3000</span>
+      </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="status-card">
+      <p style="font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--text);">Configuration Settings</p>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <label for="api-url-input" style="font-size: 11px; color: var(--text-muted);">Cloud API / Local Server URL</label>
+        <input type="text" id="api-url-input" placeholder="http://localhost:3000" style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 6px; padding: 6px 8px; color: var(--text); font-size: 11.5px; outline: none; transition: border-color 0.2s;">
+        <button id="save-btn" style="background: var(--primary); border: none; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 4px;">Save Settings</button>
+        <div id="save-status" style="font-size: 11px; color: var(--success); display: none; text-align: center; margin-top: 4px;">✓ Settings Saved!</div>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <p><strong>How to use:</strong></p>
+      <p style="margin-top: 4px;">Open ChatGPT, Claude, or Gemini. You'll see a <b>✨ Improve</b> button inside or next to the textarea. Type your prompt, click it, and enjoy your optimized prompt!</p>
+    </div>
+
+    <footer>
+      Powered by Google Gemini API
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
