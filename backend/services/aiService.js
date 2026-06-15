@@ -27,7 +27,12 @@ export class AIService {
     const systemInstruction = `You are a professional prompt engineer and meta-prompting expert.
 Your job is to analyze the user's raw input prompt, classify its intent, score it out of 10, diagnose what essential elements are missing, and rewrite it into a highly structured, high-performing master prompt.
 
-Ensure the output is formatted as JSON matching the requested schema. Provide a clear checklist of missing elements in 'gaps'. Explain exactly why the changes improve the output in 'explanation'. Make sure the 'improved_prompt' is clean and doesn't contain markdown system wrapper code (like code blocks) inside the prompt itself unless needed.
+SPEED REQUIREMENT: Keep your responses highly concise.
+- Limit 'gaps' to a maximum of 2-3 most critical items. Keep each item under 5 words.
+- Limit 'explanation' to a single ultra-short sentence (maximum 15 words).
+- Focus processing time entirely on writing a high-quality 'improved_prompt'.
+
+Ensure the output is formatted as JSON matching the requested schema. Make sure the 'improved_prompt' is clean and doesn't contain markdown system wrapper code (like code blocks) inside the prompt itself.
 
 Guidelines for rewriting the prompt based on the requested tone:
 - 'simple': Keep it clean, direct, and clear. Add a basic role and format, but keep it brief.
@@ -56,11 +61,11 @@ Raw Prompt: "${rawPrompt}"`;
         gaps: {
           type: "ARRAY",
           items: { type: "STRING" },
-          description: "List of missing prompt elements (e.g., Missing Expert Persona, No Output Format, Lacks Constraints, Vague Context)"
+          description: "List of maximum 3 critical missing elements (e.g., Vague Context, Missing Persona, No CTA). Keep each item short."
         },
         explanation: { 
           type: "STRING", 
-          description: "A brief, powerful explanation of why the improved version is better and what was added." 
+          description: "A single ultra-short explanation of why it is better (maximum 15 words)." 
         },
         improved_prompt: { 
           type: "STRING", 
