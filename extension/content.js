@@ -143,48 +143,28 @@
     }
   }
 
-  // Call backend API to fetch optimized prompt
-  async function fetchImprovedPrompt(prompt, tone) {
+  // Call backend API to fetch optimized prompt (delegated to background.js to bypass page CSP)
+  function fetchImprovedPrompt(prompt, tone) {
     renderLoadingState();
 
-    // Create abort controller for 20 seconds timeout to prevent hanging UI
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      controller.abort();
-    }, 20000);
-
-    try {
-      const backendUrl = await getBackendUrl();
-      const response = await fetch(backendUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ prompt, tone }),
-        signal: controller.signal
-      });
-
-      // Clear the timeout if the request completed
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        // Fallback catch if server returns non-JSON HTML error page
-        const errData = await response.json().catch(() => ({ error: 'Server returned an error response' }));
-        throw new Error(errData.error || 'Server error occurred');
+    chrome.runtime.sendMessage({
+      action: 'improvePrompt',
+      prompt: prompt,
+      tone: tone
+    }, (response) => {
+      // Check if connection is lost (happens when extension reloads but page isn't refreshed)
+      if (chrome.runtime.lastError) {
+        console.error('Runtime Error:', chrome.runtime.lastError);
+        renderErrorState('Extension connection lost. Please refresh the page and try again.');
+        return;
       }
 
-      const data = await response.json();
-      renderSidebarData(data);
-    } catch (error) {
-      clearTimeout(timeoutId);
-      console.error('APG Fetch Error:', error);
-      
-      let errMsg = error.message;
-      if (error.name === 'AbortError') {
-        errMsg = 'Request timed out. The server or AI API is taking too long to respond. Please try again!';
+      if (response && response.success) {
+        renderSidebarData(response.data);
+      } else {
+        renderErrorState(response ? response.error : 'Unknown error occurred during prompt improvement.');
       }
-      renderErrorState(errMsg);
-    }
+    });
   }
 
   // Render the loading spinner view
