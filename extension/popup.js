@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveBtn = document.getElementById('save-btn');
   const saveStatus = document.getElementById('save-status');
 
-  const DEFAULT_URL = 'http://localhost:3000';
+  const DEFAULT_URL = 'https://auto-prompt-generator-ds9jhmwfr.vercel.app';
 
   // Load saved settings on popup load
   chrome.storage.local.get(['backendUrl'], (result) => {

@@ -18,7 +18,7 @@
   function getBackendUrl() {
     return new Promise((resolve) => {
       chrome.storage.local.get(['backendUrl'], (result) => {
-        const baseUrl = result.backendUrl || 'http://localhost:3000';
+        const baseUrl = result.backendUrl || 'https://auto-prompt-generator-ds9jhmwfr.vercel.app';
         resolve(`${baseUrl}/api/improve`);
       });
     });
@@ -192,7 +192,7 @@
   // Render the error view
   function renderErrorState(message) {
     chrome.storage.local.get(['backendUrl'], (result) => {
-      const baseUrl = result.backendUrl || 'http://localhost:3000';
+      const baseUrl = result.backendUrl || 'https://auto-prompt-generator-ds9jhmwfr.vercel.app';
       sidebarEl.innerHTML = `
         <div class="apg-header">
           <div class="apg-header-title">
